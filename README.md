@@ -237,15 +237,7 @@ if __name__ == "__main__":
 ## RESULT:
 This project demonstrated exceptional performance and effectiveness in delivering informative responses. The results underscore the system's adeptness in extracting information from diverse sources, culminating in coherent and context-aware answers. This affirms the learning assistant's proficiency in bridging knowledge gaps through its intelligent processing capabilities.
 
-## Additional Notes
-
-- The system uses FAISS for vector storage, and the vectors are saved to a file for reuse.
-- The Replicate API token is required for accessing the pre-trained language model.
-- Make sure to adjust the model parameters and other configurations based on your specific use case.
-
-Feel free to explore and customize the code to suit your needs!
-
 **Note:** 
 - Make sure to replace `"YOUR_REPLICATE_API_TOKEN"` with your actual Replicate API token before running the script.
-- Make sure to replace `"your_pdf_name.pdf"` with your actual pdfpath before running the script.
+- Make sure to add pdf to the PDF Directory.
 
