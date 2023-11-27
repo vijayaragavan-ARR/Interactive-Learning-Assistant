@@ -18,7 +18,7 @@ The Learning Assistant is an AI-powered educational tool that enables users to e
 ## SETUP
 1. Clone the Repository
    ```shell
-   git clone "url"
+   git clone "https://github.com/vijayaragavan-ARR/Interactive-Learning-Assistant"
    ```
 2. Install the required packages:
 
@@ -97,11 +97,33 @@ def load_pdf(pdf_path):
         text = ' '.join([pytesseract.image_to_string(image) for image in images])
     return text
 
-# MAIN PDF PATH
-pdf_path='your_pdf_name.pdf'
-text=load_pdf(pdf_path)
+# FUNCTION TO COMBINE PDFs FROM A DIRECTORY
+def combine_pdfs(directory_path, output_path='combined_pdf.pdf'):
 
+    pdf_files = [f for f in os.listdir(directory_path) if f.endswith('.pdf')]
 
+    if not pdf_files:
+        print("No PDF files found in the specified directory.")
+        return
+
+    pdf_merger = PdfMerger()
+
+    for pdf_file in pdf_files:
+        pdf_path = os.path.join(directory_path, pdf_file)
+        pdf_merger.append(pdf_path)
+
+    pdf_merger.write(output_path)
+    pdf_merger.close()
+
+    print(f"Combined PDF saved to: {output_path}")
+
+# MAIN PDF DIRECTORY
+pdf_directory_path = 'PDF'
+combine_pdfs(pdf_directory_path)
+
+# LOAD COMBINED PDF AND EXTRACT TEXT
+pdf_path_combined = 'combined_pdf.pdf'
+text = load_pdf(pdf_path_combined)
 
 # ASK USER IF THEY WANT TO USE WEBSITE AND YOUTUBE CONTENT
 webyt = input("Do you want to use website and YouTube content? (yes or no): ").capitalize()
@@ -156,35 +178,40 @@ def opti_response(response):
 # FUNCTION TO GENERATE A RESPONSE TO A USER QUERY
 def ResponseQuery(query):
   if not query:
-        return "I don't have a response for an empty query."
-  docs = VectorStore.similarity_search(query=query, k=5)
+    return "I don't have a response for an empty query."
+  docs = VectorStore.similarity_search(query=query, k=3)
   response = opti_response(chain.run(input_documents=docs, question=query))
   return response
 
 # FUNCTION TO EVALUATE USER-PROVIDED ANSWERS
 def evaluate_ans(ans1, ans2, query):
     eval_temp = """
-    Given 2 different responses ({ans1}) and ({ans2}) to a ({query}), evaluate the response based on the following criteria:
+    Given 2 different responses ({ans1}) and ({ans2}) to a ({query}), name the first response as AI-Answer and the second response as USER-Answer. Evaluate the responses based on the following criteria:
+
     1. Relevance: Assess the relevance of the content to the given context. Ensure that the response directly addresses the specified rules and requirements.
     2. Completeness: Verify if the response covers all the specified points and includes all necessary information.
     3. Grammar and Clarity: Check for grammatical errors and assess the overall clarity of the response.
     4. Improvement Suggestions: Provide constructive feedback on how the response could be improved, suggesting specific areas for enhancement or clarification.
     5. Overall Rating out of 10: Assign a numerical score to the response based on the overall quality, considering accuracy, relevance, creativity, completeness, and clarity.
     """
+
     evaluation_template = PromptTemplate(input_variables=["ans1", "ans2", "query"], template=eval_temp)
     evaluation_template.format(ans1=ans1, ans2=ans2, query=query)
-    llm_chain=llm_chain = LLMChain(llm=llm, prompt=evaluation_template)
-    print(opti_response(llm_chain.run({"ans1": ans1, "ans2": ans2, "query": query})))
-    print("AI-ANS",ans1)
-    print("USER-ANS",ans2)
-
-
+    llm_chain = LLMChain(llm=llm, prompt=evaluation_template)
+    print("AI-ANS: ",ans1,end="\n\n")
+    print(llm_chain.run({"ans1": ans1, "ans2": ans2, "query": query}),end="\n\n")
 
 #MAIN FUNCTION:
 if __name__ == "__main__":
     while True:
         user_input = input("ask a question or answer a question: ")
         if user_input.lower() in ["exit", "quit", "bye"]:
+            print("Multiple choice Question: ")
+            response=ResponseQuery("Ask me a multiple choice question with 4 choices:")
+            print(response)
+            human_ans = input(f' give me your answer for "{response}": ')
+            print('Your Answer: ', human_ans)
+            print('Correct Answer: ',ResponseQuery(response))
             print("Goodbye!")
             break
         if user_input.lower() == "ask":
@@ -193,11 +220,11 @@ if __name__ == "__main__":
             print(response)
             human_ans = input(f' give me your answer for "{response}": ')
             print('Your answer: ', human_ans)
-            # evaluate_ans(ResponseQuery(response), human_ans, response)
+            evaluate_ans(ResponseQuery(response), human_ans, response)
         else:
             query = input("Ask questions about your PDF file:")
             response = ResponseQuery(query)
-            print("QUESTION:", query)
+            print("QUESTION:", query,end="\n\n")
             print("ANSWER:", response, sep=" ", end="\n\n")
 
 
