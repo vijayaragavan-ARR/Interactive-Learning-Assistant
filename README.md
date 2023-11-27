@@ -154,7 +154,7 @@ else:
 
 # SET UP REPLICATE MODEL
 llm = Replicate( 
- model="meta/llama-2-70b:a52e56fee2269a78c9279800ec88898cecb6c8f1df22a6483132bea266648f00",
+ model="meta/llama-2-70b-chat:02e509c789964a7ea8736978a43525956ef40397be9033abf9fd2badfe68c9e3",
       model_kwargs={
           "temperature": 0.5,
           "max_length": 1000,
