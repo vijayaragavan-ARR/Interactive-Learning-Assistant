@@ -1,0 +1,13 @@
+pip install os-sys
+pip install pickle5
+pip install pytesseract
+pip install PyPDF2
+pip install pdf2image
+pip install langchain
+pip install torch
+pip install transformers
+pip install sentence-transformers
+pip install pillow
+pip install numpy
+pip install youtube-dl
+pip install beautifulsoup4
