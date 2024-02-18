@@ -1,4 +1,4 @@
-# ADAPTIVE LEARNING ASSISTANT
+# INTERACTIVE LEARNING ASSISTANT
 
 The Learning Assistant is an AI-powered educational tool that enables users to extract information from various sources, ask insightful questions, and receive comprehensive answers in a conversational manner. It leverages state-of-the-art language models and question-answering techniques to provide a personalized and engaging learning experience.
 
